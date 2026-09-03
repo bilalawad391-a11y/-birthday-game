@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>هدية زياد 🎀</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#ffe4ef,#f8e7ff,#e3f3ff);
+  color:#5b4050;
+  overflow-x:hidden;
+}
+
+.container{
+  width:92%;
+  max-width:650px;
+  margin:auto;
+  padding:25px 0 50px;
+}
+
+.card{
+  background:rgba(255,255,255,.82);
+  backdrop-filter:blur(10px);
+  border-radius:30px;
+  padding:28px 20px;
+  text-align:center;
+  box-shadow:0 15px 40px rgba(120,70,100,.15);
+  border:2px solid rgba(255,255,255,.8);
+}
+
+h1{
+  font-size:32px;
+  margin:8px 0 12px;
+}
+
+h2{
+  font-size:25px;
+}
+
+p{
+  font-size:17px;
+  line-height:1.8;
+}
+
+button{
+  border:0;
+  padding:14px 25px;
+  border-radius:50px;
+  background:linear-gradient(135deg,#ff8fba,#c99cff);
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 7px 18px rgba(200,120,180,.3);
+  transition:.2s;
+}
+
+button:active{
+  transform:scale(.94);
+}
+
+.hidden{
+  display:none;
+}
+
+.progressBox{
+  margin:15px 0 25px;
+}
+
+.progressText{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.bar{
+  height:22px;
+  background:#f3dce8;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.fill{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#ff77ad,#c38cff);
+  transition:1s;
+  border-radius:20px;
+}
+
+/* القلوب */
+.heartArea{
+  height:300px;
+  position:relative;
+  background:rgba(255,220,235,.45);
+  border-radius:25px;
+  overflow:hidden;
+  margin:15px 0;
+}
+
+.heart{
+  position:absolute;
+  font-size:35px;
+  cursor:pointer;
+  animation:float 1.5s infinite alternate;
+}
+
+@keyframes float{
+  from{transform:translateY(0) rotate(-8deg);}
+  to{transform:translateY(-12px) rotate(8deg);}
+}
+
+/* الأسئلة */
+.question{
+  font-size:20px;
+  font-weight:bold;
+  margin:20px 0;
+}
+
+.answers{
+  display:grid;
+  gap:12px;
+}
+
+.answer{
+  background:#fff0f6;
+  color:#65465a;
+  box-shadow:none;
+}
+
+/* لعبة السرعة */
+.bigHeart{
+  font-size:90px;
+  cursor:pointer;
+  margin:25px;
+  user-select:none;
+}
+
+/* المطابقة */
+.memoryGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:20px;
+}
+
+.memory{
+  height:70px;
+  border-radius:15px;
+  background:#f3b5d0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:28px;
+  cursor:pointer;
+}
+
+.finalMessage{
+  text-align:right;
+  background:#fff3f8;
+  border-radius:22px;
+  padding:20px;
+  margin-top:20px;
+  line-height:2;
+  font-size:18px;
+}
+
+.floating{
+  position:fixed;
+  top:-30px;
+  animation:fall linear forwards;
+  pointer-events:none;
+}
+
+@keyframes fall{
+  to{
+    transform:translateY(110vh) rotate(360deg);
+    opacity:0;
+  }
+}
+
+.small{
+  font-size:14px;
+  opacity:.7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- البداية -->
+<div class="card" id="start">
+
+  <div style="font-size:65px;">🎁</div>
+
+  <h1>هدية صغيرة لزياد 🎀</h1>
+
+  <p>
+    زياد... عندي ليك لعبة صغيرة 👀❤️
+    <br>
+    خلص المراحل كلها وشوف إيه اللي مستنيك في الآخر.
+  </p>
+
+  <button onclick="startGame()">ابدأ اللعبة 🎮</button>
+
+</div>
+
+
+<!-- اللعبة -->
+<div class="card hidden" id="game">
+
+  <div class="progressBox">
+    <div class="progressText">
+      ❤️ نسبة الحب: <span id="percent">0</span>/100
+    </div>
+
+    <div class="bar">
+      <div class="fill" id="fill"></div>
+    </div>
+  </div>
+
+  <!-- المرحلة 1 -->
+  <div id="stage1">
+
+    <h2>المرحلة الأولى ❤️</h2>
+
+    <p>
+      اجمع القلوب كلها قبل ما تختفي!
+    </p>
+
+    <div class="heartArea" id="heartArea"></div>
+
+    <p>
+      القلوب المتبقية:
+      <b id="heartCount">5</b>
+    </p>
+
+  </div>
+
+
+  <!-- المرحلة 2 -->
+  <div id="stage2" class="hidden">
+
+    <h2>المرحلة الثانية 🧠</h2>
+
+    <p>نشوف بقى زياد يعرف نفسه قد إيه 😂❤️</p>
+
+    <div class="question" id="question"></div>
+
+    <div class="answers" id="answers"></div>
+
+  </div>
+
+
+  <!-- المرحلة 3 -->
+  <div id="stage3" class="hidden">
+
+    <h2>المرحلة الثالثة 🎯</h2>
+
+    <p>
+      اضغط على القلب <b>10 مرات</b> بسرعة!
+    </p>
+
+    <div class="bigHeart" onclick="hitHeart()">❤️</div>
+
+    <p>
+      الضغطات:
+      <b id="hits">0</b>/10
+    </p>
+
+  </div>
+
+
+  <!-- المرحلة 4 -->
+  <div id="stage4" class="hidden">
+
+    <h2>المرحلة الرابعة 🧩</h2>
+
+    <p>
+      طابق القلوب المتشابهة!
+    </p>
+
+    <div class="memoryGrid" id="memoryGrid"></div>
+
+  </div>
+
+
+  <!-- المرحلة 5 -->
+  <div id="stage5" class="hidden">
+
+    <h2>المرحلة الأخيرة 🎁</h2>
+
+    <div style="font-size:80px;">💗</div>
+
+    <p>
+      وصلت لآخر مرحلة يا زياد 👀
+      <br>
+      اضغط على القلب عشان تكمل المفاجأة.
+    </p>
+
+    <button onclick="finishGame()">افتح المفاجأة 💌</button>
+
+  </div>
+
+</div>
+
+
+<!-- الرسالة النهائية -->
+<div class="card hidden" id="final">
+
+  <div style="font-size:80px;">🎂💗🎀</div>
+
+  <h1>100/100 ❤️</h1>
+
+  <h2>كل سنة وإنت طيب يا زياد 🥹</h2>
+
+  <div class="finalMessage">
+
+    حبيبي دي هديه صغيره ليك والله ❤️
+
+    <br><br>
+
+    لو كنت معاك علي الحقيقة كنت عملت معاك اكتر واحسن من كده،
+    بس ما باليد حيله 🥹
+
+    <br><br>
+
+    بحبك يسطا ❤️
+
+    <br><br>
+
+    ومهما زعلت ومهما عصبتني،
+    هفضل برضو أحبك 😂❤️
+
+    <br><br>
+
+    بحبك يسطاااا ❤️🎀
+
+    <br><br>
+
+    كل سنه وانت طيب يا حب 🎂❤️
+
+  </div>
+
+  <p class="small">
+    صنعت بحب مخصوص ليك 🎀
+  </p>
+
+</div>
+
+</div>
+
+
+<script>
+
+let love = 0;
+
+function startGame(){
+
+  document.getElementById("start").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+
+  createHearts();
+}
+
+
+/* تحديث نسبة الحب */
+
+function addLove(amount){
+
+  love += amount;
+
+  if(love > 100) love = 100;
+
+  document.getElementById("percent").innerText = love;
+  document.getElementById("fill").style.width = love + "%";
+
+}
+
+
+/* المرحلة الأولى */
+
+let heartsLeft = 5;
+
+function createHearts(){
+
+  const area = document.getElementById("heartArea");
+
+  area.innerHTML = "";
+
+  heartsLeft = 5;
+
+  document.getElementById("heartCount").innerText = heartsLeft;
+
+  for(let i=0;i<5;i++){
+
+    const heart = document.createElement("div");
+
+    heart.className = "heart";
+    heart.innerText = "❤️";
+
+    heart.style.left = Math.random()*80 + "%";
+    heart.style.top = Math.random()*75 + "%";
+
+    heart.onclick = function(){
+
+      heart.remove();
+
+      heartsLeft--;
+
+      document.getElementById("heartCount").innerText = heartsLeft;
+
+      if(heartsLeft === 0){
+
+        addLove(20);
+
+        setTimeout(nextStage,600);
+
+      }
+
+    };
+
+    area.appendChild(heart);
+
+  }
+
+}
+
+
+/* الانتقال بين المراحل */
+
+function nextStage(){
+
+  for(let i=1;i<=5;i++){
+
+    const stage = document.getElementById("stage"+i);
+
+    if(stage) stage.classList.add("hidden");
+
+  }
+
+  if(love === 20){
+
+    document.getElementById("stage2").classList.remove("hidden");
+
+    loadQuestion();
+
+  }
+
+  else if(love === 40){
+
+    document.getElementById("stage3").classList.remove("hidden");
+
+  }
+
+  else if(love === 60){
+
+    document.getElementById("stage4").classList.remove("hidden");
+
+    startMemory();
+
+  }
+
+  else if(love === 80){
+
+    document.getElementById("stage5").classList.remove("hidden");
+
+  }
+
+}
+
+
+/* المرحلة الثانية */
+
+let currentQuestion = 0;
+
+const questions = [
+
+  {
+    q:"مين الشخص اللي بيعمل أحلى هدية؟ 😂",
+    a:["زياد طبعًا 😎","أنا ❤️","القطط 🐱","محدش 😂"],
+    correct:1
+  },
+
+  {
+    q:"إيه أهم حاجة في الصحوبية؟",
+    a:["الفلوس","الزعل","الجدعنة ❤️","النكد"],
+    correct:2
+  },
+
+  {
+    q:"زياد يستحق كام من 100؟",
+    a:["50","70","99","100 ❤️"],
+    correct:3
+  }
+
+];
+
+function loadQuestion(){
+
+  const q = questions[currentQuestion];
+
+  document.getElementById("question").innerText = q.q;
+
+  const answers = document.getElementById("answers");
+
+  answers.innerHTML = "";
+
+  q.a.forEach((answer,index)=>{
+
+    const btn = document.createElement("button");
+
+    btn.className = "answer";
+    btn.innerText = answer;
+
+    btn.onclick = function(){
+
+      if(index === q.correct){
+
+        currentQuestion++;
+
+        if(currentQuestion >= questions.length){
+
+          addLove(20);
+
+          currentQuestion=0;
+
+          setTimeout(nextStage,600);
+
+        }else{
+
+          loadQuestion();
+
+        }
+
+      }else{
+
+        btn.innerText = "غلط يا زياد 😂 جرب تاني";
+
+      }
+
+    };
+
+    answers.appendChild(btn);
+
+  });
+
+}
+
+
+/* المرحلة الثالثة */
+
+let hits = 0;
+
+function hitHeart(){
+
+  hits++;
+
+  document.getElementById("hits").innerText = hits;
+
+  if(hits >= 10){
+
+    addLove(20);
+
+    hits=0;
+
+    setTimeout(()=>{
+
+      document.getElementById("hits").innerText=0;
+
+      nextStage();
+
+    },600);
+
+  }
+
+}
+
+
+/* المرحلة الرابعة */
+
+let firstCard = null;
+let secondCard = null;
+let locked = false;
+let matched = 0;
+
+function startMemory(){
+
+  const grid = document.getElementById("memoryGrid");
+
+  grid.innerHTML = "";
+
+  firstCard=null;
+  secondCard=null;
+  locked=false;
+  matched=0;
+
+  let symbols = ["❤️","🎀","🌸","💗"];
+
+  let cards = [...symbols,...symbols];
+
+  cards.sort(()=>Math.random()-.5);
+
+  cards.forEach(symbol=>{
+
+    const card=document.createElement("div");
+
+    card.className="memory";
+    card.innerText="❓";
+
+    card.dataset.symbol=symbol;
+
+    card.onclick=function(){
+
+      if(locked || card.innerText!=="❓") return;
+
+      card.innerText=symbol;
+
+      if(!firstCard){
+
+        firstCard=card;
+
+      }else{
+
+        secondCard=card;
+
+        locked=true;
+
+        if(firstCard.dataset.symbol===secondCard.dataset.symbol){
+
+          matched++;
+
+          firstCard=null;
+          secondCard=null;
+          locked=false;
+
+          if(matched===4){
+
+            addLove(20);
+
+            setTimeout(nextStage,700);
+
+          }
+
+        }else{
+
+          setTimeout(()=>{
+
+            firstCard.innerText="❓";
+            secondCard.innerText="❓";
+
+            firstCard=null;
+            secondCard=null;
+
+            locked=false;
+
+          },700);
+
+        }
+
+      }
+
+    };
+
+    grid.appendChild(card);
+
+  });
+
+}
+
+
+/* النهاية */
+
+function finishGame(){
+
+  addLove(20);
+
+  document.getElementById("game").classList.add("hidden");
+  document.getElementById("final").classList.remove("hidden");
+
+  confetti();
+
+}
+
+
+/* قلوب احتفال */
+
+function confetti(){
+
+  for(let i=0;i<35;i++){
+
+    const item=document.createElement("div");
+
+    item.className="floating";
+
+    item.innerText=["❤️","💗","🎀","✨","🌸"][Math.floor(Math.random()*5)];
+
+    item.style.left=Math.random()*100+"%";
+
+    item.style.animationDuration=(3+Math.random()*4)+"s";
+
+    item.style.fontSize=(18+Math.random()*25)+"px";
+
+    document.body.appendChild(item);
+
+    setTimeout(()=>item.remove(),7000);
+
+  }
+
+}
+
+</script>
+
+</body>
+  </html>
